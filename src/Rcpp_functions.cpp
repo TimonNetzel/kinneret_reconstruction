@@ -573,7 +573,7 @@ vector<double> vector_weight_vector(vector<double> input_vec, vector<double>  we
 
 
 // samples from the dirichlet proposal density for the taxa weights
-vector<double> new_taxa_weights(vector<double> old_weights, int dirichlet_spread, default_random_engine& rng) { // default_random_engine& rng
+vector<double> new_taxa_weights(vector<double> old_weights, int dirichlet_spread, default_random_engine& rng) {
     double min_weight;
     int k = old_weights.size();
     vector<double> new_weights(k);
@@ -582,9 +582,9 @@ vector<double> new_taxa_weights(vector<double> old_weights, int dirichlet_spread
     
     int check = 0;
     while (check == 0) {
-        // Call the dirichlet_sample function to sample new weights.
+        // call the dirichlet_sample function to sample new weights.
         new_weights = dirichlet_sample(dirichlet_input,rng);
-        // Check if all values of the new weights are greater than 0.
+        // check if all values of the new weights are greater than 0.
         min_weight = *min_element(new_weights.begin(), new_weights.end());
         if (min_weight > 0) {
             check = 1;
@@ -867,6 +867,16 @@ List mcmc_conduction(List prior, List core_info, List proposal_params, List tf_i
     // MCMC loop
     //--------------------------------------------------------------------------------------------------
     
+    // declaration of objects inside MCMC loop
+    vector<double> new_weights; 
+    vector<double> biome_ratios_age;
+    vector<double> new_tf_sample;
+    vector<double> new_tf_sample_norm;
+    vector<double> old_tf_sample_norm;
+    vector<double> new_reconst_params;
+      
+    double taxa_weigths_ratio,transfer_ratio,propose_variance,start_variance,variance_ratio,propose_temp,start_temp,temp_ratio,propose_pann,start_pann,pann_ratio,climate_ratio,acc_prob;
+    
     for(int i=1; i<sample_length; i++) {
         
         //--------------------------------------------------------------------------------------------------
@@ -884,55 +894,55 @@ List mcmc_conduction(List prior, List core_info, List proposal_params, List tf_i
         //--------------------------------------------------------------------------------------------------
         
         // sample new taxa weights and calculate the respective taxa weight ratios for the rwMH
-        vector<double> new_weights = new_taxa_weights(old_taxa_weights,dirichlet_spread,rng);
-        double taxa_weigths_ratio = taxa_weights_ratios(new_weights,old_taxa_weights,jeffreys_taxa_prior); 
+        new_weights = new_taxa_weights(old_taxa_weights,dirichlet_spread,rng);
+        taxa_weigths_ratio = taxa_weights_ratios(new_weights,old_taxa_weights,jeffreys_taxa_prior); 
         
         // create new taxa spectrum based on the updated weights and new biome probs based on the updated taxa spectrum and norm them to densities
-        vector<double> biome_ratios_age = spectrum_to_biome_assign(taxa_spectrum_age,new_weights,biomes_assign,length_age, num_taxa,num_biomes);
+        biome_ratios_age = spectrum_to_biome_assign(taxa_spectrum_age,new_weights,biomes_assign,length_age,num_taxa,num_biomes);
 
         //--------------------------------------------------------------------------------------------------
         // transfer function module: rwMH
         //--------------------------------------------------------------------------------------------------
 
         // sample new climate values from the TFs 
-        vector<double> new_tf_sample = tf_sampling(old_tf_sample,sds_tfs,tfs_lower,tfs_upper,seeds[i]);
+        new_tf_sample = tf_sampling(old_tf_sample,sds_tfs,tfs_lower,tfs_upper,seeds[i]);
         
         // normalize the tf samples for the nnet model
-        vector<double> new_tf_sample_norm = normalize_tf_samples(new_tf_sample,normal_params);
-        vector<double> old_tf_sample_norm = normalize_tf_samples(old_tf_sample,normal_params);
+        new_tf_sample_norm = normalize_tf_samples(new_tf_sample,normal_params);
+        old_tf_sample_norm = normalize_tf_samples(old_tf_sample,normal_params);
         
         // calculate the respective ratios for the rwMH
-        double  transfer_ratio = tf_samples_ratios(new_tf_sample,old_tf_sample,new_tf_sample_norm,old_tf_sample_norm,sds_tfs,tfs_lower,tfs_upper,wts_in_hidden,wts_hidden_out,wts_bias_hidden,wts_bias_out);
+        transfer_ratio = tf_samples_ratios(new_tf_sample,old_tf_sample,new_tf_sample_norm,old_tf_sample_norm,sds_tfs,tfs_lower,tfs_upper,wts_in_hidden,wts_hidden_out,wts_bias_hidden,wts_bias_out);
 
         //--------------------------------------------------------------------------------------------------
         // reconstruction module: independent MH 
         //--------------------------------------------------------------------------------------------------
         
         // reconstruction
-        vector<double> new_reconst_params = reconstruction(biome_ratios_age,ap_age,new_tf_sample, length_age, num_biomes);
+        new_reconst_params = reconstruction(biome_ratios_age,ap_age,new_tf_sample, length_age, num_biomes);
 
         // ratios
         // proxy pool module: independent MH
-        double propose_variance = beta_pdf(new_reconst_params[0], shape1,shape2);
-        double start_variance = beta_pdf(old_expl_variance, shape1,shape2);
-        double variance_ratio = propose_variance/start_variance;
+        propose_variance = beta_pdf(new_reconst_params[0], shape1,shape2);
+        start_variance = beta_pdf(old_expl_variance, shape1,shape2);
+        variance_ratio = propose_variance/start_variance;
         
         // climate module: independent MH
-        double propose_temp = norm_pdf(new_reconst_params[1], mean_temp,sd_temp);
-        double start_temp = norm_pdf(old_recent_temp, mean_temp,sd_temp);
-        double temp_ratio = propose_temp/start_temp;
+        propose_temp = norm_pdf(new_reconst_params[1], mean_temp,sd_temp);
+        start_temp = norm_pdf(old_recent_temp, mean_temp,sd_temp);
+        temp_ratio = propose_temp/start_temp;
         
-        double propose_pann = gamma_pdf(new_reconst_params[2], shape_pann,rate_pann);
-        double start_pann = gamma_pdf(old_recent_pann, shape_pann,rate_pann);
-        double pann_ratio = propose_pann/start_pann;
+        propose_pann = gamma_pdf(new_reconst_params[2], shape_pann,rate_pann);
+        start_pann = gamma_pdf(old_recent_pann, shape_pann,rate_pann);
+        pann_ratio = propose_pann/start_pann;
 
-        double climate_ratio = temp_ratio * pann_ratio;
+        climate_ratio = temp_ratio * pann_ratio;
 
         //--------------------------------------------------------------------------------------------------
         // acceptance 
         //--------------------------------------------------------------------------------------------------
     
-        double acc_prob = variance_ratio * climate_ratio * taxa_weigths_ratio * transfer_ratio; 
+        acc_prob = variance_ratio * climate_ratio * taxa_weigths_ratio * transfer_ratio; 
 
         
         if(uniform_sample(rng) < acc_prob){
