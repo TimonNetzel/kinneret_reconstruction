@@ -173,11 +173,12 @@ for(i in 1:length(taxa_names)){
 pdf("plots/taxa_weights.pdf", width = 8, height = 8)
     colnames(post_process$post_weights) <- taxa_names
     par(mar= c(5.1, 12.1, 4.1, 2.1))
-    boxplot(post_process$post_weights,horizontal = T, las = 1, main= "", col = taxa_g_biomes_cols, ylim = c(0,0.25) )
+    boxplot(post_process$post_weights,horizontal = T, las = 1, main= "", col = taxa_g_biomes_cols, ylim = c(0,max(post_process$post_weights) + 0.05) )
     abline(v=rep(1/num_taxa,num_taxa), lwd = 2)
+    legend("topright",legend=c("Prior taxa weight",biome_names),fill = c(NA,biome_cols), border = c("grey95", "black", "black", "black") ,lty = c(1,NA,NA,NA), lwd = c(2,NA,NA,NA), cex = 1, x.intersp=c(2,0.5,0.5,0.5),box.col = "grey95",bg = "grey95")
     title("Posterior and prior taxa weights", adj = 0)
+    box()
 dev.off()
-
 
 
 ##------------------------------------------------------------------------------------------------------ 
@@ -212,37 +213,9 @@ dev.off()
 
 smoothed_post_probs <- post_process$smoothed_post_probs 
 
-pdf("plots/transfer_functions_2D_dists.pdf", width = 15, height = 5)
-
-    par(mfrow = c(1,3), cex.axis=1.4, cex.lab = 1.4)
-
-    par(mar= c(5.1, 5.1, 4.1, 5.1))
-    image.plot(temp_range,pann_range,b1_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = expression(P[ANN] *" [mm]"),useRaster = F)
-    contour(temp_range,pann_range,smoothed_post_probs[1,,], add = T, levels = 0.5, labcex=1.1)
-    title(paste0("(a) ",biome_names[1]," probabilities"), adj = 0, cex.main = 1.7)
-    legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
-    box()  
-
-    par(mar= c(5.1, 5.1, 4.1, 5.1))
-    image.plot(temp_range,pann_range,b2_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = "")
-    contour(temp_range,pann_range,smoothed_post_probs[2,,], add = T, levels = 0.5, labcex=1.1)
-    title(paste0("(b) ",biome_names[2]," probabilities"), adj = 0, cex.main = 1.7)
-    legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
-    box()   
-
-    par(mar= c(5.1, 5.1, 4.1, 5.1))
-    image.plot(temp_range,pann_range,b3_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = "")
-    contour(temp_range,pann_range,smoothed_post_probs[3,,], add = T, levels = 0.5, labcex=1.1)
-    title(paste0("(c) ",biome_names[3]," probabilities"), adj = 0, cex.main = 1.7)
-    legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
-    box() 
-    
-dev.off()
-
-
-##------------------------------------------------------------------------------------------------------ 
-## plots of the ratio of posterior TFs to prior TFs CI sizes
-##------------------------------------------------------------------------------------------------------  
+b1_give_c <- array( biome_probs[,1], c(dims, dims) )
+b2_give_c <- array( biome_probs[,2], c(dims, dims) )
+b3_give_c <- array( biome_probs[,3], c(dims, dims) )
 
 
 ratios_summary <- c()
@@ -250,13 +223,41 @@ ratios_summary[seq(1,2*num_biomes,by=2)] <- post_process$post_temp_ci_size/post_
 ratios_summary[seq(2,2*num_biomes,by=2)] <- post_process$post_pann_ci_size/post_process$prior_pann_ci_size
 ratios <- matrix(ratios_summary,nr=2)
 
-pdf(paste0("plots/transfer_functions_ratio.pdf"), width = 8, height = 8)
-    par(mar= c(5.1, 12.1, 4.1, 2.1))
-    barplot(ratios, beside=T, col=c("orange","lightblue"), names.arg=biome_names, las = 1,horiz = T, xlim = c(0,max(ratios)+0.2))
-    legend("topright", c(expression(T[DJF]),expression(P[ANN])), pch=15, col=c("orange","lightblue"), bty="", bg = "white")
-    title("Ratio of posterior to prior CI sizes", adj = 0)
-dev.off()
+biome_names_short <- c("Mediterranean","Irano-Turanian","Saharo-Arabian")
 
+
+pdf("plots/transfer_functions_2D_dists.pdf", width = 12, height = 11)
+
+    par(mfrow = c(2,2), cex.axis=1.4, cex.lab = 1.4)
+
+    par(mar= c(5.1, 5.1, 4.1, 7.1))
+    image.plot(temp_range,pann_range,b1_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = expression(P[ANN] *" [mm]"),useRaster = F)
+    contour(temp_range,pann_range,smoothed_post_probs[1,,], add = T, levels = 0.5, labcex=1.1)
+    title(paste0("(a) ",biome_names[1]," probabilities"), adj = 0, cex.main = 1.5)
+    legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
+    box()  
+
+    par(mar= c(5.1, 5.1, 4.1, 7.1))
+    image.plot(temp_range,pann_range,b2_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = "")
+    contour(temp_range,pann_range,smoothed_post_probs[2,,], add = T, levels = 0.5, labcex=1.1)
+    title(paste0("(b) ",biome_names[2]," probabilities"), adj = 0, cex.main = 1.5)
+    legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
+    box()   
+
+    par(mar= c(5.1, 5.1, 4.1, 7.1))
+    image.plot(temp_range,pann_range,b3_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = expression(P[ANN] *" [mm]"))
+    contour(temp_range,pann_range,smoothed_post_probs[3,,], add = T, levels = 0.5, labcex=1.1)
+    title(paste0("(c) ",biome_names[3]," probabilities"), adj = 0, cex.main = 1.5)
+    legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
+    box() 
+    
+    par(mar= c(5.1, 10.1, 4.1, 2.1))
+    barplot(ratios[,3:1], beside=T, col=c("orange","lightblue"), names.arg=biome_names_short[3:1], las = 1,horiz = T, xlim = c(0,max(ratios)+0.2))
+    legend("topright", c(expression(T[DJF]),expression(P[ANN])), pch=15, col=c("orange","lightblue"), bty="", bg = "white",cex=1.5)
+    title("(d) Ratio of posterior to prior CI sizes", adj = 0, cex.main = 1.5)
+
+    
+dev.off()
 
 
 ##------------------------------------------------------------------------------------------------------ 

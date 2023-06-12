@@ -52,8 +52,8 @@ for(i in 1:num_biomes){
     sds_temp[i] <- sqrt(c(((temp_range - expectation_temp)^2) %*% biome_tf_temp[i,]))
     sds_pann[i] <- sqrt(c(((pann_range - expectation_pann)^2) %*% biome_tf_pann[i,]))
     # from Rosenthal 2010: "Optimal Proposal Distributions and Adaptive MCMC" (equation 5) 
-    sds_temp[i] <- sds_temp[i]*(2.38^2/(2*num_taxa))
-    sds_pann[i] <- sds_pann[i]*(2.38^2/(2*num_taxa))
+    sds_temp[i] <- sds_temp[i]*(2.38^2/(num_taxa))
+    sds_pann[i] <- sds_pann[i]*(2.38^2/(num_taxa))
 }
 
 

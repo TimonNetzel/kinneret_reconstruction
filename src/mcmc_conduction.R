@@ -42,11 +42,10 @@ sampling_info$seeds <- seeds
 sampling_info$reproducible <- reproducible
 
 
-# https://teuder.github.io/rcpp4everyone_en/
+
 # MCMC conduction
-system.time(
-    posterior <- mcmc_conduction(prior,core_info, proposal_params, tf_info, sampling_info)
-)
+posterior <- mcmc_conduction(prior,core_info, proposal_params, tf_info, sampling_info)
+
     
 # acceptance rate 
 accept_cumsum <- cumsum(posterior$acceptance)
@@ -59,15 +58,3 @@ for(i in 2:sample_length){
 
 # save the posterior output
 save(posterior, file = "data/out/posterior.rdata")
-
-
-
-# # plot the acceptance rate
-# if(sim_nr == 1){
-#     plot(posterior$acc_rate, ty="l",ylim = c(0.25,0.35))
-# }else{
-#     lines(posterior$acc_rate)
-# }
-
-
-

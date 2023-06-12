@@ -236,12 +236,13 @@ post_processing <- function(posterior,age,depth,burn_in,sample_length,thin_size,
 
 
     # ratio of posterior TFs to prior TFs CI sizes 
+    ci_range <- c(0.025,0.975)
     prior_temp_ci_size <- post_temp_ci_size <- prior_pann_ci_size <- post_pann_ci_size <- c()
     for(i in 1:num_biomes){
-        prior_temp_ci_size[i] <- diff(quantile(tf_prior_temp_sample[,i],c(0.05,0.95)))
-        post_temp_ci_size[i] <- diff(quantile(tf_post_temp[,i],c(0.05,0.95)))
-        prior_pann_ci_size[i] <- diff(quantile(tf_prior_pann_sample[,i],c(0.05,0.95)))
-        post_pann_ci_size[i] <- diff(quantile(tf_post_pann[,i],c(0.05,0.95)))
+        prior_temp_ci_size[i] <- diff(quantile(tf_prior_temp_sample[,i],ci_range))
+        post_temp_ci_size[i] <- diff(quantile(tf_post_temp[,i],ci_range))
+        prior_pann_ci_size[i] <- diff(quantile(tf_prior_pann_sample[,i],ci_range))
+        post_pann_ci_size[i] <- diff(quantile(tf_post_pann[,i],ci_range))
     }
 
 
@@ -284,7 +285,6 @@ post_processing <- function(posterior,age,depth,burn_in,sample_length,thin_size,
     norm_smooth <- array(0, dim = c(dims,dims+smoothing_factor))
     for(i in 1:dims){
         norm_smooth[i,(1+(i-1)):(smoothing_factor+(i-1))] <- gaussian_smoother
-
     }
     norm_smooth <- norm_smooth[,((smoothing_factor/2)+1):(dims+(smoothing_factor/2))]
 
