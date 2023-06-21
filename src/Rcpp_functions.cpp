@@ -788,7 +788,7 @@ vector<int> seed_samples(int seeds, int reproducible, int sample_length){
     // generate sample_length random samples
     vector<int> samples(sample_length);
     for (int i = 0; i < sample_length; i++) {
-        samples[i] = rand() % sample_length;
+        samples[i] = rand() % 127773;
     }
     // shuffle the samples
     random_shuffle(samples.begin(), samples.end());
