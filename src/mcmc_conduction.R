@@ -6,7 +6,6 @@
 ## distributions, and the core data
 ##------------------------------------------------------------------------------  
  
- 
 # summary
 tf_info <- list()
 tf_info$wts_in_hidden <- wts_in_hidden 
@@ -38,14 +37,12 @@ core_info$biomes_assign <- c(biomes_assign)
 
 sampling_info <- list()
 sampling_info$sample_length <- sample_length
-sampling_info$seeds <- seeds
-sampling_info$reproducible <- reproducible
-
-
+sampling_info$seed_samples <- round(runif(n=sample_length, min = 1, max = 127773)) # upper limit is prescribed by the corresponding C++ truncated normal function
 
 # MCMC conduction
-posterior <- mcmc_conduction(prior,core_info, proposal_params, tf_info, sampling_info)
-
+system.time(
+    posterior <- mcmc_conduction(prior,core_info, proposal_params, tf_info, sampling_info)
+)
     
 # acceptance rate 
 accept_cumsum <- cumsum(posterior$acceptance)
@@ -54,7 +51,7 @@ for(i in 2:sample_length){
     posterior$acc_rate[i-1] <- accept_cumsum[i] / i
 }
 
-
-
 # save the posterior output
 save(posterior, file = "data/out/posterior.rdata")
+
+

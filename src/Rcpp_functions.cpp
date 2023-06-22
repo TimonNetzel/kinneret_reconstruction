@@ -779,25 +779,6 @@ vector<double> normalize_tf_samples(vector<double> tf_samples,vector<double> nor
 }
 
 
-// generate random samples
-vector<int> seed_samples(int seeds, int reproducible, int sample_length){
-    // set the seed
-    if(reproducible == 1){
-        srand(seeds); 
-    }
-    // generate sample_length random samples
-    vector<int> samples(sample_length);
-    for (int i = 0; i < sample_length; i++) {
-        samples[i] = rand() % 127773;
-    }
-    // shuffle the samples
-    random_shuffle(samples.begin(), samples.end());
-
-    return samples;
-}
-
- 
-
 // function for the MCMC conduction
 // [[Rcpp::export]]
 List mcmc_conduction(List prior, List core_info, List proposal_params, List tf_info, List sampling_info){ 
@@ -853,12 +834,10 @@ List mcmc_conduction(List prior, List core_info, List proposal_params, List tf_i
 
     // sampling information
     int sample_length = sampling_info["sample_length"];
-    int seed = sampling_info["seeds"];
-    int reproducible = sampling_info["reproducible"];
-
+    vector<int> seed_samples = sampling_info["seed_samples"];
+    
     // for random sample generation 
-    vector<int> seeds = seed_samples(seed, reproducible, sample_length);
-    default_random_engine rng(seeds[1]);
+    default_random_engine rng(seed_samples[0]);
 
     // draw from uniform distribution within the acceptance-rejection step
     uniform_real_distribution<double> uniform_sample(0.0, 1.0);
@@ -905,7 +884,7 @@ List mcmc_conduction(List prior, List core_info, List proposal_params, List tf_i
         //--------------------------------------------------------------------------------------------------
 
         // sample new climate values from the TFs 
-        new_tf_sample = tf_sampling(old_tf_sample,sds_tfs,tfs_lower,tfs_upper,seeds[i]);
+        new_tf_sample = tf_sampling(old_tf_sample,sds_tfs,tfs_lower,tfs_upper,seed_samples[i]);
         
         // normalize the tf samples for the nnet model
         new_tf_sample_norm = normalize_tf_samples(new_tf_sample,normal_params);
