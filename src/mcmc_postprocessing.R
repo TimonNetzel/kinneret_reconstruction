@@ -313,14 +313,14 @@ pdf("plots/independent_proposal_dists.pdf", width = 12, height = 5)
     plot(post_dens_pollen,yaxt = "n", ylab = "", main = "", xlab = expression(R^2),xlim = c(0,1), xaxs='i') 
     polygon(c(min(post_dens_pollen$x), post_dens_pollen$x,1),c(0, post_dens_pollen$y,0),col = "lightgrey")
     lines(beta_x,prior_dens_pollen, col = "orange")
-    title("(c) AP/NAP", adj = 0, cex.main = 1.5)
+    title("(c) Arboreal pollen", adj = 0, cex.main = 1.5)
 
 dev.off()
 
 
 
 ##------------------------------------------------------------------------------------------------------ 
-## age-depth transformation of AP/NAP 
+## age-depth transformation of AP 
 ##------------------------------------------------------------------------------------------------------ 
 
 
@@ -335,7 +335,7 @@ pdf("plots/age_depth_transform.pdf", width = 10, height = 6)
     legend("topright", legend = c("With age-depth-transformation","No age-depth-transformation"), lty=1, col = c("black","cadetblue1"), lwd = 2, bg = "white")
     axis(1, at = seq(0,8.5,by=0.5))
     axis(2, at = seq(0,100,by=10), las = 1)
-    title("AP/NAP of Lake Kinneret",adj=0,cex.main=1.5)
+    title("Arboreal pollen from Lake Kinneret",adj=0,cex.main=1.5)
     box()
 dev.off()
 
