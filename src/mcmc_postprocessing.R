@@ -211,7 +211,8 @@ dev.off()
 ##------------------------------------------------------------------------------------------------------
 
 
-smoothed_post_probs <- post_process$smoothed_post_probs 
+post_tf_probs <- post_process$post_tf_probs 
+pann_range_linear <- seq(min(pann_range), max(pann_range), length.out = dims)
 
 b1_give_c <- array( biome_probs[,1], c(dims, dims) )
 b2_give_c <- array( biome_probs[,2], c(dims, dims) )
@@ -232,21 +233,21 @@ pdf("plots/transfer_functions_2D_dists.pdf", width = 12, height = 11)
 
     par(mar= c(5.1, 5.1, 4.1, 7.1))
     image.plot(temp_range,pann_range,b1_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = expression(P[ANN] *" [mm]"),useRaster = F)
-    contour(temp_range,pann_range,smoothed_post_probs[1,,], add = T, levels = 0.5, labcex=1.1)
+    contour(temp_range,pann_range_linear,post_tf_probs[1,,], add = T, levels = 0.5, labcex=1.1)
     title(paste0("(a) ",biome_names[1]," probabilities"), adj = 0, cex.main = 1.5)
     legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
     box()  
 
     par(mar= c(5.1, 5.1, 4.1, 7.1))
     image.plot(temp_range,pann_range,b2_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = "")
-    contour(temp_range,pann_range,smoothed_post_probs[2,,], add = T, levels = 0.5, labcex=1.1)
+    contour(temp_range,pann_range_linear,post_tf_probs[2,,], add = T, levels = 0.5, labcex=1.1)
     title(paste0("(b) ",biome_names[2]," probabilities"), adj = 0, cex.main = 1.5)
     legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
     box()   
 
     par(mar= c(5.1, 5.1, 4.1, 7.1))
     image.plot(temp_range,pann_range,b3_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = expression(P[ANN] *" [mm]"))
-    contour(temp_range,pann_range,smoothed_post_probs[3,,], add = T, levels = 0.5, labcex=1.1)
+    contour(temp_range,pann_range_linear,post_tf_probs[3,,], add = T, levels = 0.5, labcex=1.1)
     title(paste0("(c) ",biome_names[3]," probabilities"), adj = 0, cex.main = 1.5)
     legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
     box() 
@@ -320,7 +321,7 @@ dev.off()
 
 
 ##------------------------------------------------------------------------------------------------------ 
-## age-depth transformation of AP 
+## age-depth transformation of AP
 ##------------------------------------------------------------------------------------------------------ 
 
 
@@ -338,21 +339,4 @@ pdf("plots/age_depth_transform.pdf", width = 10, height = 6)
     title("Arboreal pollen from Lake Kinneret",adj=0,cex.main=1.5)
     box()
 dev.off()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
