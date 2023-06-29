@@ -258,45 +258,11 @@ post_processing <- function(posterior,age,depth,burn_in,sample_length,thin_size,
     
     
     # posterior tf sample prediction on a 2D climate grid
-    normal_params <- nnet_fit_params$normal_params
-    norm_temp_samples <- (tf_post_temp - normal_params[1]) / normal_params[2]
-    norm_pann_samples <- qnorm(pgamma(sqrt(tf_post_pann), normal_params[3], normal_params[4]))
-    # nnet params
-    wts_in_hidden <- nnet_fit_params$wts_in_hidden 
-    wts_hidden_out <- nnet_fit_params$wts_hidden_out 
-    wts_bias_hidden <- nnet_fit_params$wts_bias_hidden
-    wts_bias_out <- nnet_fit_params$wts_bias_out 
-    post_probs_pred_grid <- array(0, dim = c(num_biomes,dims,dims))
-    for(i in 1:length(which_samples)){
-        for(j in 1:num_biomes){
-            # probs
-            post_probs <- my_nnet_prediction(norm_temp_samples[i,j], norm_pann_samples[i,j], wts_in_hidden, wts_hidden_out, wts_bias_hidden, wts_bias_out)[j]
-            # prob ids
-            temp_grid_id <- which.min(abs(temp_range - tf_post_temp[i,j]))
-            pann_grid_id <- which.min(abs(pann_range - tf_post_pann[i,j]))
-            post_probs_pred_grid[j,temp_grid_id,pann_grid_id] <- post_probs
-        }
-    }
-
-
-    # gaussian smoothing kernel
-    smoothing_factor <- 100
-    gaussian_smoother <- dnorm(seq(-5,5,length.out=smoothing_factor))
-    norm_smooth <- array(0, dim = c(dims,dims+smoothing_factor))
-    for(i in 1:dims){
-        norm_smooth[i,(1+(i-1)):(smoothing_factor+(i-1))] <- gaussian_smoother
-    }
-    norm_smooth <- norm_smooth[,((smoothing_factor/2)+1):(dims+(smoothing_factor/2))]
-
-    # normalize and smooth the posterior tf sample distributions
-    smoothed_post_probs <- array(0, dim = c(num_biomes,dims,dims))
+    post_tf_probs <- array(0, dim = c(num_biomes,dims,dims))
     for(i in 1:num_biomes){
-        for(j in 1:dims){
-            smoothed_post_probs[i,,j] <- (post_probs_pred_grid[i,,j] %*% norm_smooth)[1,]
-        }
-        smoothed_post_probs[i,,] <- smoothed_post_probs[i,,]/max(smoothed_post_probs[i,,])
+        post_tf_probs[i,,] <- kde2d(tf_post_temp[,i], tf_post_pann[,i], n = dims, lims = c(min(temp_range),max(temp_range), min(pann_range),max(pann_range)))$z
+        post_tf_probs[i,,] <- post_tf_probs[i,,]/max(post_tf_probs[i,,])
     }
-    
 
     ##---------------------------------------------------------------------------------------------------------
     ## summary of the post processing output
@@ -339,7 +305,7 @@ post_processing <- function(posterior,age,depth,burn_in,sample_length,thin_size,
     post_process$post_pann_array_age <- post_pann_array_age
     post_process$post_biomes_array_depth <- post_biomes_array_depth
     post_process$post_biomes_array_age <- post_biomes_array_age
-    post_process$smoothed_post_probs <- smoothed_post_probs
+    post_process$post_tf_probs <- post_tf_probs
 
     
     return(post_process)
