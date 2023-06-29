@@ -232,7 +232,7 @@ pdf("plots/transfer_functions_2D_dists.pdf", width = 12, height = 11)
     par(mfrow = c(2,2), cex.axis=1.4, cex.lab = 1.4)
 
     par(mar= c(5.1, 5.1, 4.1, 7.1))
-    image.plot(temp_range,pann_range,b1_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = expression(P[ANN] *" [mm]"),useRaster = F)
+    image.plot(temp_range,pann_range,b1_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = "", ylab = expression(P[ANN] *" [mm]"),useRaster = F)
     contour(temp_range,pann_range_linear,post_tf_probs[1,,], add = T, levels = 0.5, labcex=1.1)
     title(paste0("(a) ",biome_names[1]," probabilities"), adj = 0, cex.main = 1.5)
     legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
