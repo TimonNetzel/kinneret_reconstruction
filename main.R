@@ -2,6 +2,7 @@
 # include needed R libraries
 library(Rcpp)
 library(fields)
+library(MASS)
 
 
 # "random" settings
