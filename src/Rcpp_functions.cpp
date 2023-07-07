@@ -430,7 +430,7 @@ double expl_variance_cpp(int n, vector<double> reconst, vector<double> reference
     double numerator = n * sum_xy - sum_x * sum_y;
     double denominator = sqrt((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y));
     double correlation = numerator / denominator;
-    if (denominator != 0) {
+    if (denominator != 0 && correlation > 0) {
         expl_variance = correlation * correlation;
     }
 
