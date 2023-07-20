@@ -298,14 +298,14 @@ pdf("plots/independent_proposal_dists.pdf", width = 12, height = 5)
 
     par(mfrow = c(1,3), cex.axis=1.2, cex.lab = 1.2)
 
-    plot(post_dens_temp,yaxt = "n", ylab = "Normalized density", main = "", xlab = expression(T[DJF] *" [°C]"),xlim = c(0,20)) 
+    plot(post_dens_temp,yaxt = "n", ylab = "Normalized density", main = "", xlab = expression(T[DJF] *" [°C]"),xlim = c(0,20), xaxs='i') 
     polygon(c(min(post_dens_temp$x), post_dens_temp$x),c(0, post_dens_temp$y),col = "lightgrey")
     lines(norm_x,prior_dens_temp, col = "orange")
     legend("topright", legend = c("Prior","Posterior"), col = c("orange",NA), lty=c(1,NA), fill = c(NA, "lightgrey"),border = c(NA,"black"),x.intersp=c(2,0.5),bty = "n",cex=1.2, lwd = c(1.2,NA))
     title("(a) Winter temperature", adj = 0, cex.main = 1.5)
 
 
-    plot(post_dens_pann,yaxt = "n", ylab = "", main = "", xlab = expression(P[ANN] *" [mm]"),xlim = c(0,1000)) 
+    plot(post_dens_pann,yaxt = "n", ylab = "", main = "", xlab = expression(P[ANN] *" [mm]"),xlim = c(0,1000), xaxs='i') 
     polygon(c(min(post_dens_pann$x), post_dens_pann$x),c(0, post_dens_pann$y),col = "lightgrey")
     lines(gamma_x,prior_dens_pann, col = "orange")
     title("(b) Annual precipitation", adj = 0, cex.main = 1.5)
