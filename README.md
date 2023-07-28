@@ -1,32 +1,31 @@
 FUNCTIONALITY:
 
-    Performs the MCMC simulation described in the publication.
-    Each script is written very simply to make it clear what it is about.
+    The scripts perform the MCMC simulation described in the publication.
+    Each script is written very simply and clearly to ensure a quick insight into how it works.
     The R-based scripts contain some MCMC functions written in C++. 
-    Only one rarely used R package (Rcpp) has to be installed at the beginning, which connects R with C++.
+    Only a rather rarely used R package (Rcpp) has to be installed at the beginning, which creates an interface between R and C++.
 
 
 TO RUN RECONSTRUCTION:
 
     Open 'main.R'.
     
-    Install the following packages if necessary: Rcpp and fields (install.packages("Rcpp"),..).
+    Install the following packages if necessary: Rcpp,... (install.packages("Rcpp"),...).
 
-    Load these packages and set the reproducibility and MCMC settings.
+    Import all required packages and set the settings for reproducibility and MCMC.
     
     Load and prepare all necessary data stored in Rdata files (data/in).
 
     Run and save the MCMC simulation (takes about 40 seconds on a standard CPU and is saved in data/out).
 
-    Run the postprocessing routine that calculates, saves, and plots the most important posterior metrics (data/out, /plots).
+    Run the post-processing routine that calculates, stores and plots the most important posterior metrics (data/out, plots).
 
 CHANGES OF BASIC SETTINGS
 
-    If reproducible is "FALSE", each MCMC simulation will give a different result.
+    If reproducibly "FALSE", each MCMC simulation will give a slightly different result.
     Since our MCMC simulation converges, the differences are minimal and the main features of the results are preserved.
     
-    The mcmc sampling only needs to be performed once. 
-    Therefore, there is an option to switch it off.
+    MCMC sampling only needs to be done once.
+    That is why there is the possibility to switch it off.
     The convergence test described in the publication is based on the predefined parameters of sample length, burn-in and thin size.
     A corresponding change should therefore be treated with caution.
-
