@@ -22,7 +22,7 @@ TO RUN RECONSTRUCTION:
 
 CHANGES OF BASIC SETTINGS:
 
-    If reproducibly "FALSE", each MCMC simulation will give a slightly different result.
+    If reproducibly is set to "FALSE", each MCMC simulation will give a slightly different result.
     Since our MCMC simulation converges, the differences are minimal and the main features of the results are preserved.
     
     MCMC sampling only needs to be done once.
