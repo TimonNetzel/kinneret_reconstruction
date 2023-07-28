@@ -40,10 +40,8 @@ sampling_info$sample_length <- sample_length
 sampling_info$seed_samples <- round(runif(n=sample_length, min = 1, max = 127773)) # upper limit is prescribed by the corresponding C++ truncated normal function
 
 # MCMC conduction
-system.time(
-    posterior <- mcmc_conduction(prior,core_info, proposal_params, tf_info, sampling_info)
-)
-    
+posterior <- mcmc_conduction(prior,core_info, proposal_params, tf_info, sampling_info)
+
 # acceptance rate 
 accept_cumsum <- cumsum(posterior$acceptance)
 posterior$acc_rate <- c()

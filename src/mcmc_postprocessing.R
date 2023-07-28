@@ -47,7 +47,7 @@ pdf("plots/reconstruction.pdf", height=13, width=13)
             ylab= expression(T[DJF]*" [°C]"),
             axes = F,
             cex.lab = 1.2)
-    title("(a) Winter temperature",adj=0,cex.main=1.5)
+    title("(a) Temperature",adj=0,cex.main=1.5)
     axis(1, at=pretty(round(age/1000,2), n=20), labels=T, tcl=-0.25, cex.axis = 1.2)
     axis(2, at=seq(temp_ylim[1],temp_ylim[2], by = 1), labels=FALSE)
     axis(2, at=seq(temp_ylim[1],temp_ylim[2], by = 5), cex.axis = 1.2)
@@ -69,7 +69,7 @@ pdf("plots/reconstruction.pdf", height=13, width=13)
             ylab= expression(P[ANN]*" [mm]"),
             axes = F,
             cex.lab = 1.2 )
-    title("(b) Annual precipitation",adj=0,cex.main=1.5)
+    title("(b) Precipitation",adj=0,cex.main=1.5)
     axis(1, at=pretty(round(age/1000,2), n=20), labels=T, tcl=-0.25, cex.axis = 1.2)
     axis(2, at=seq(precip_ylim[1],precip_ylim[2], by = 200), cex.axis = 1.2)
     mtext(expression("[mm]"^-1),at= precip_ylim[2], 4, line = 3, cex = 1.2)
@@ -170,15 +170,33 @@ for(i in 1:length(taxa_names)){
 }
 
 
+fonts <- rep(1,length(taxa_names))
+fonts[c(7,11,17)] <- 5
+
 pdf("plots/taxa_weights.pdf", width = 8, height = 8)
     colnames(post_process$post_weights) <- taxa_names
     par(mar= c(5.1, 12.1, 4.1, 2.1))
-    boxplot(post_process$post_weights,horizontal = T, las = 1, main= "", col = taxa_g_biomes_cols, ylim = c(0,max(post_process$post_weights) + 0.05) )
+    boxplot(post_process$post_weights,horizontal = T, las = 1, main= "", col = taxa_g_biomes_cols, ylim = c(0,max(post_process$post_weights) + 0.05), font=fonts)
     abline(v=rep(1/num_taxa,num_taxa), lwd = 2)
     legend("topright",legend=c("Prior taxa weight",biome_names),fill = c(NA,biome_cols), border = c("grey95", "black", "black", "black") ,lty = c(1,NA,NA,NA), lwd = c(2,NA,NA,NA), cex = 1, x.intersp=c(2,0.5,0.5,0.5),box.col = "grey95",bg = "grey95")
     title("Posterior and prior taxa weights", adj = 0)
     box()
 dev.off()
+
+
+
+windowsFonts(
+  A=windowsFont("Arial Black"),
+  B=windowsFont("Bookman Old Style"),
+  C=windowsFont("Comic Sans MS"),
+  D=windowsFont("Times New Roman")
+)
+par(mfrow=c(2,2))
+for (f in LETTERS[1:4]) {
+  par(family=f)
+  boxplot(Sepal.Length ~ Species, data = iris, main = "Title", font=2)  
+}
+
 
 
 ##------------------------------------------------------------------------------------------------------ 
@@ -191,23 +209,23 @@ pdf("plots/transfer_functions_boxplots.pdf", width = 12, height = 6)
     
     par(mfrow = c(1,2))
     
-    bx <- boxplot(cbind(post_process$tf_prior_temp_sample,post_process$tf_post_temp)[,c(1,4,2,5,3,6)], at=c(1,2,3,4,5,6), col = c(biome_cols,biome_cols)[c(1,4,2,5,3,6)], axes = F, ylim = c(-15,30), ylab = "[°C]")  
+    bx <- boxplot(cbind(post_process$tf_prior_temp_sample,post_process$tf_post_temp)[,c(1,4,2,5,3,6)], at=c(1,2,3,4,5,6), col = c(biome_cols,biome_cols)[c(1,4,2,5,3,6)], axes = F, ylim = c(-15,30), ylab = expression(T[DJF]*" [°C]"))  
     rect(c(2-0.4, 4-0.4, 6-0.4),bx$stats[2,c(2,4,6)], c(2+0.4, 4+0.4, 6+0.4), bx$stats[4,c(2,4,6)],density=12, angle=45)
     axis(2, at = seq(-20,30,by=5), las=1)
-    title("(a) Winter temperature", adj = 0)
+    title("(a) Temperature", adj = 0)
     box()
     
-    bx <- boxplot(cbind(post_process$tf_prior_pann_sample,post_process$tf_post_pann)[,c(1,4,2,5,3,6)], at=c(1,2,3,4,5,6), col = c(biome_cols,biome_cols)[c(1,4,2,5,3,6)], axes = F, ylim = c(0,2000), ylab = "[mm]")  
+    bx <- boxplot(cbind(post_process$tf_prior_pann_sample,post_process$tf_post_pann)[,c(1,4,2,5,3,6)], at=c(1,2,3,4,5,6), col = c(biome_cols,biome_cols)[c(1,4,2,5,3,6)], axes = F, ylim = c(0,2000), ylab = expression(P[ANN]*" [mm]"))  
     rect(c(2-0.4, 4-0.4, 6-0.4),bx$stats[2,c(2,4,6)], c(2+0.4, 4+0.4, 6+0.4), bx$stats[4,c(2,4,6)],density=12, angle=45)
     axis(2, at = seq(0,2000,by=200), las=1)
-    title("(b) Annual precipitation", adj = 0)
+    title("(b) Precipitation", adj = 0)
     box()
 
 dev.off()
 
 
 ##------------------------------------------------------------------------------------------------------ 
-## plots of the posterior and prior transfer functions (image plots)
+## plots of the posterior and prior transfer functions
 ##------------------------------------------------------------------------------------------------------
 
 
@@ -232,24 +250,24 @@ pdf("plots/transfer_functions_2D_dists.pdf", width = 12, height = 11)
     par(mfrow = c(2,2), cex.axis=1.4, cex.lab = 1.4)
 
     par(mar= c(5.1, 5.1, 4.1, 7.1))
-    image.plot(temp_range,pann_range,b1_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = "", ylab = expression(P[ANN] *" [mm]"),useRaster = F)
+    contour(temp_range,pann_range,b1_give_c, xlim = c(-10,30), ylim = c(0,1500),lty = 2, levels = 0.5, labcex=1.1, xlab = "", ylab = expression(P[ANN] *" [mm]"))
     contour(temp_range,pann_range_linear,post_tf_probs[1,,], add = T, levels = 0.5, labcex=1.1)
     title(paste0("(a) ",biome_names[1]," probabilities"), adj = 0, cex.main = 1.5)
-    legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
+    legend("topright", legend = c("Prior","Posterior"), lty=c(2,1), cex = 1.5, bty = "n")
     box()  
 
     par(mar= c(5.1, 5.1, 4.1, 7.1))
-    image.plot(temp_range,pann_range,b2_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = "")
+    contour(temp_range,pann_range,b2_give_c, xlim = c(-10,30), ylim = c(0,1500),lty = 2, levels = 0.5, labcex=1.1, xlab = expression(T[DJF] *" [°C]"), ylab = "")
     contour(temp_range,pann_range_linear,post_tf_probs[2,,], add = T, levels = 0.5, labcex=1.1)
     title(paste0("(b) ",biome_names[2]," probabilities"), adj = 0, cex.main = 1.5)
-    legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
+    legend("topright", legend = c("Prior","Posterior"), lty=c(2,1), cex = 1.5, bty = "n")
     box()   
 
     par(mar= c(5.1, 5.1, 4.1, 7.1))
-    image.plot(temp_range,pann_range,b3_give_c, xlim = c(-10,30), ylim = c(0,1500), col=density_col, las = 1, xlab = expression(T[DJF] *" [°C]"), ylab = expression(P[ANN] *" [mm]"))
+    contour(temp_range,pann_range,b3_give_c, xlim = c(-10,30), ylim = c(0,1500),lty = 2, levels = 0.5, labcex=1.1, drawlabels = FALSE, xlab = expression(T[DJF] *" [°C]"), ylab = expression(P[ANN] *" [mm]"))
     contour(temp_range,pann_range_linear,post_tf_probs[3,,], add = T, levels = 0.5, labcex=1.1)
     title(paste0("(c) ",biome_names[3]," probabilities"), adj = 0, cex.main = 1.5)
-    legend("topright", legend = c("Posterior", "Prior"),col = c("black",density_col[dims]), pch = c(NA,15), lty=c(1,NA),cex = 1.5)
+    legend("topright", legend = c("Prior","Posterior"), lty=c(2,1), cex = 1.5, bty = "n")
     box() 
     
     par(mar= c(5.1, 10.1, 4.1, 2.1))
@@ -302,13 +320,13 @@ pdf("plots/independent_proposal_dists.pdf", width = 12, height = 5)
     polygon(c(min(post_dens_temp$x), post_dens_temp$x),c(0, post_dens_temp$y),col = "lightgrey")
     lines(norm_x,prior_dens_temp, col = "orange")
     legend("topright", legend = c("Prior","Posterior"), col = c("orange",NA), lty=c(1,NA), fill = c(NA, "lightgrey"),border = c(NA,"black"),x.intersp=c(2,0.5),bty = "n",cex=1.2, lwd = c(1.2,NA))
-    title("(a) Winter temperature", adj = 0, cex.main = 1.5)
+    title("(a) Temperature", adj = 0, cex.main = 1.5)
 
 
     plot(post_dens_pann,yaxt = "n", ylab = "", main = "", xlab = expression(P[ANN] *" [mm]"),xlim = c(0,1000), xaxs='i') 
     polygon(c(min(post_dens_pann$x), post_dens_pann$x),c(0, post_dens_pann$y),col = "lightgrey")
     lines(gamma_x,prior_dens_pann, col = "orange")
-    title("(b) Annual precipitation", adj = 0, cex.main = 1.5)
+    title("(b) Precipitation", adj = 0, cex.main = 1.5)
 
 
     plot(post_dens_pollen,yaxt = "n", ylab = "", main = "", xlab = expression(R^2),xlim = c(0,1), xaxs='i') 
@@ -321,22 +339,34 @@ dev.off()
 
 
 ##------------------------------------------------------------------------------------------------------ 
-## age-depth transformation of AP
+## age-depth transformation of arboreal pollen 
 ##------------------------------------------------------------------------------------------------------ 
 
 
 ages_no_transfrom <- round(age_depth$age[[1]]/1000,2)
 ages_transfrom <- round(age_depth$age[[2]]/1000,2)
-pdf("plots/age_depth_transform.pdf", width = 10, height = 6)
+pdf("plots/age_depth_transform.pdf", width = 10, height = 12)
+
+    par(mfrow = c(2,1))
+
+    plot(depth,ap_depth, ty= "l", ylim = c(0,100), xlab = "Depth [cm]", ylab = "%", lwd = 2, axes = F, xaxs="i", yaxs="i")
+    polygon(c(min(depth), depth,max(depth)),c(0, ap_depth,0),col = "lightgrey")
+    lines(depth,ap_depth, lwd = 2)
+    axis(1, at = seq(0,1770,by=50))
+    axis(2, at = seq(0,100,by=10), las = 1)
+    title("(a) Arboreal pollen from Lake Kinneret with respect to depth",adj=0,cex.main=1.5)
+    box()
+
+
     plot(ages_transfrom,ap_age, ty= "l", ylim = c(0,100), xlab = "Age [cal ka BP]", ylab = "%", lwd = 2, axes = F, xaxs="i", yaxs="i")
     polygon(c(min(ages_transfrom), ages_transfrom,max(ages_transfrom)),c(0, ap_age,0),col = "lightgrey")
-    lines(ages_no_transfrom,ap_depth, lwd = 2.5)
-    lines(ages_no_transfrom,ap_depth, lwd = 2, col = "cadetblue1")
-    legend("topright", legend = c("With age-depth-transformation","No age-depth-transformation"), lty=1, col = c("black","black"), lwd = 2.5, bg = "white")
-    legend("topright", legend = c("With age-depth-transformation","No age-depth-transformation"), lty=1, col = c("black","cadetblue1"), lwd = 2, bg = "white")
+    lines(ages_transfrom,ap_age, lwd = 2)
+    lines(ages_no_transfrom,ap_depth, lwd = 2, col = "orange")
+    legend("topright", legend = c("Old age-depth transformation","New age-depth transformation"), col = c("orange",NA), lty=c(1,NA), fill = c(NA, "lightgrey"),border = c(NA,"black"),x.intersp=c(2,0.5),bty = "n",cex=1.2, lwd = c(1.2,NA))
     axis(1, at = seq(0,8.5,by=0.5))
     axis(2, at = seq(0,100,by=10), las = 1)
-    title("Arboreal pollen from Lake Kinneret",adj=0,cex.main=1.5)
+    title("(b) As (a), but with respect to age",adj=0,cex.main=1.5)
     box()
+    
 dev.off()
 
