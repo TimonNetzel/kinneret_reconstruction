@@ -20,7 +20,7 @@ TO RUN RECONSTRUCTION:
 
     Run the post-processing routine that calculates, stores and plots the most important posterior metrics (data/out, plots).
 
-CHANGES OF BASIC SETTINGS
+CHANGES OF BASIC SETTINGS:
 
     If reproducibly "FALSE", each MCMC simulation will give a slightly different result.
     Since our MCMC simulation converges, the differences are minimal and the main features of the results are preserved.
