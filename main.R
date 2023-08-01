@@ -26,7 +26,7 @@ source("src/mcmc_preparation.R")
 
 # MCMC sampling (only needed once) 
 if(mcmc_sampling){
-    source("src/mcmc_conduction.R")
+    source("src/mcmc_execution.R")
 }
 
 # post processing of the MCMC samples and plotting
