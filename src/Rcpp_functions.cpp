@@ -409,7 +409,7 @@ float my_logf (float a)
  
   
 //--------------------------------------------------------------------------------------------------
-// my functions for the MCMC conduction
+// functions for the MCMC
 //--------------------------------------------------------------------------------------------------
 
 // explained variance: for the comparison of the reconstruction with a reference curve
@@ -779,9 +779,9 @@ vector<double> normalize_tf_samples(vector<double> tf_samples,vector<double> nor
 }
 
 
-// function for the MCMC conduction
+// function for the MCMC execution
 // [[Rcpp::export]]
-List mcmc_conduction(List prior, List core_info, List proposal_params, List tf_info, List sampling_info){ 
+List mcmc_execution(List prior, List core_info, List proposal_params, List tf_info, List sampling_info){ 
     
     // Basic declaration
 
