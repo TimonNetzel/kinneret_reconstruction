@@ -3,7 +3,8 @@ FUNCTIONALITY:
     The scripts perform the MCMC simulation described in the publication.
     Each script is written very simply and clearly to ensure a quick insight into how it works.
     The R-based scripts contain some MCMC functions written in C++. 
-    Only a rather rarely used R package (Rcpp) has to be installed at the beginning, which creates an interface between R and C++.
+    Only a rather rarely used R package (Rcpp) has to be installed at the beginning, which creates an interface between 
+    R and C++.
 
 
 TO RUN RECONSTRUCTION:
@@ -18,7 +19,8 @@ TO RUN RECONSTRUCTION:
 
     Run and save the MCMC simulation (takes about 40 seconds on a standard CPU and is saved in data/out).
 
-    Run the post-processing routine that calculates, stores and plots the most important posterior metrics (data/out, plots).
+    Run the post-processing routine that calculates, stores and plots the most important posterior metrics 
+    (data/out, plots).
 
 CHANGES OF BASIC SETTINGS:
 
@@ -27,5 +29,6 @@ CHANGES OF BASIC SETTINGS:
     
     MCMC sampling only needs to be done once.
     That is why there is the possibility to switch it off.
-    The convergence test described in the publication is based on the predefined parameters of sample length, burn-in and thin size.
+    The convergence test described in the publication is based on the predefined parameters of sample length, 
+    burn-in, and thin size.
     A corresponding change should therefore be treated with caution.
