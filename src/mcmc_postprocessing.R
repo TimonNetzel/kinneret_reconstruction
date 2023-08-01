@@ -169,35 +169,15 @@ for(i in 1:length(taxa_names)){
     taxa_g_biomes_cols[i] <- biome_cols[biome_id[i,]]
 }
 
-
-fonts <- rep(1,length(taxa_names))
-fonts[c(7,11,17)] <- 5
-
 pdf("plots/taxa_weights.pdf", width = 8, height = 8)
     colnames(post_process$post_weights) <- taxa_names
     par(mar= c(5.1, 12.1, 4.1, 2.1))
-    boxplot(post_process$post_weights,horizontal = T, las = 1, main= "", col = taxa_g_biomes_cols, ylim = c(0,max(post_process$post_weights) + 0.05), font=fonts)
+    boxplot(post_process$post_weights,horizontal = T, las = 1, main= "", col = taxa_g_biomes_cols, ylim = c(0,max(post_process$post_weights) + 0.05))
     abline(v=rep(1/num_taxa,num_taxa), lwd = 2)
     legend("topright",legend=c("Prior taxa weight",biome_names),fill = c(NA,biome_cols), border = c("grey95", "black", "black", "black") ,lty = c(1,NA,NA,NA), lwd = c(2,NA,NA,NA), cex = 1, x.intersp=c(2,0.5,0.5,0.5),box.col = "grey95",bg = "grey95")
     title("Posterior and prior taxa weights", adj = 0)
     box()
 dev.off()
-
-
-
-windowsFonts(
-  A=windowsFont("Arial Black"),
-  B=windowsFont("Bookman Old Style"),
-  C=windowsFont("Comic Sans MS"),
-  D=windowsFont("Times New Roman")
-)
-par(mfrow=c(2,2))
-for (f in LETTERS[1:4]) {
-  par(family=f)
-  boxplot(Sepal.Length ~ Species, data = iris, main = "Title", font=2)  
-}
-
-
 
 ##------------------------------------------------------------------------------------------------------ 
 ## plots of the posterior and prior transfer functions (boxplots)
