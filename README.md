@@ -3,24 +3,31 @@ FUNCTIONALITY:
     The scripts perform the MCMC simulation described in the publication.
     Each script is written very simply and clearly to ensure a quick insight into how it works.
     The R-based scripts contain some MCMC functions written in C++. 
-    Only a rather rarely used R package (Rcpp) has to be installed at the beginning, which creates an interface between 
+    Only one rather rarely used R package (Rcpp) has to be installed at the beginning, which creates an interface between 
     R and C++.
 
 
 TO RUN RECONSTRUCTION:
 
-    Open 'main.R'.
+    Install the following packages if necessary: Rcpp, fields, and MASS
     
-    Install the following packages if necessary: Rcpp,... (install.packages("Rcpp"),...).
+    To execute the entire reconstruction, simply run "main.R" with e.g. "source("main.R")"
 
-    Import all required packages and set the settings for reproducibility and MCMC.
+    This script contains the following:
+
+    - import of all required packages, 
+
+    - settings for reproducibility and MCMC,
     
-    Load and prepare all necessary data stored in Rdata files (data/in).
+    - load and prepare all data stored in rdata files (data/in),
 
-    Run and save the MCMC simulation (takes about 40 seconds on a standard CPU and is saved in data/out).
+    - C++ functions are compiled and included into R (sourceCpp),
 
-    Run the post-processing routine that calculates, stores and plots the most important posterior metrics 
-    (data/out, plots).
+    - run and save the MCMC simulation (takes about 40 seconds on a standard CPU and is saved in data/out),
+
+    - run the postprocessing routine that calculates, stores and plots the most important posterior metrics 
+      (data/out, plots).
+      
 
 CHANGES OF BASIC SETTINGS:
 
