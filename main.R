@@ -5,7 +5,7 @@ library(fields)
 library(MASS)
 
 
-# "random" settings
+# reproducibility settings
 reproducible <- TRUE
 seeds <- 2023
 
