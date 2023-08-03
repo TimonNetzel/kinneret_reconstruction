@@ -179,35 +179,10 @@ pdf("plots/taxa_weights.pdf", width = 8, height = 8)
     box()
 dev.off()
 
-##------------------------------------------------------------------------------------------------------ 
-## plots of the posterior and prior transfer functions (boxplots)
-##------------------------------------------------------------------------------------------------------ 
-
-
-
-pdf("plots/transfer_functions_boxplots.pdf", width = 12, height = 6)
-    
-    par(mfrow = c(1,2))
-    
-    bx <- boxplot(cbind(post_process$tf_prior_temp_sample,post_process$tf_post_temp)[,c(1,4,2,5,3,6)], at=c(1,2,3,4,5,6), col = c(biome_cols,biome_cols)[c(1,4,2,5,3,6)], axes = F, ylim = c(-15,30), ylab = expression(T[DJF]*" [°C]"))  
-    rect(c(2-0.4, 4-0.4, 6-0.4),bx$stats[2,c(2,4,6)], c(2+0.4, 4+0.4, 6+0.4), bx$stats[4,c(2,4,6)],density=12, angle=45)
-    axis(2, at = seq(-20,30,by=5), las=1)
-    title("(a) Temperature", adj = 0)
-    box()
-    
-    bx <- boxplot(cbind(post_process$tf_prior_pann_sample,post_process$tf_post_pann)[,c(1,4,2,5,3,6)], at=c(1,2,3,4,5,6), col = c(biome_cols,biome_cols)[c(1,4,2,5,3,6)], axes = F, ylim = c(0,2000), ylab = expression(P[ANN]*" [mm]"))  
-    rect(c(2-0.4, 4-0.4, 6-0.4),bx$stats[2,c(2,4,6)], c(2+0.4, 4+0.4, 6+0.4), bx$stats[4,c(2,4,6)],density=12, angle=45)
-    axis(2, at = seq(0,2000,by=200), las=1)
-    title("(b) Precipitation", adj = 0)
-    box()
-
-dev.off()
-
 
 ##------------------------------------------------------------------------------------------------------ 
 ## plots of the posterior and prior transfer functions
 ##------------------------------------------------------------------------------------------------------
-
 
 post_tf_probs <- post_process$post_tf_probs 
 pann_range_linear <- seq(min(pann_range), max(pann_range), length.out = dims)
