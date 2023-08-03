@@ -11,7 +11,7 @@ TO RUN RECONSTRUCTION:
 
     Install the following packages if necessary: Rcpp, fields, and MASS
     
-    To execute the entire reconstruction, simply run "main.R" with e.g. "source("main.R")"
+    To execute the entire reconstruction, simply run "main.R" with e.g. "Rscript main.R"
 
     This script contains the following:
 
